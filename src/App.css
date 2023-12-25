@@ -1,0 +1,16 @@
+#root,
+.app-content {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.employee-container{
+    margin: 15px;
+}
+
+
+.ant-menu-root{
+    text-align: center;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "illuminate-example/eloquent",
+  "description": "Implementation of Database Queries with illuminate and Eloquent",
+  "type": "project",
+  "require": {
+    "illuminate/database": "^7.30",
+    "illuminate/support": "5.7.17",
+    "illuminate/events": "5.7.17"
+
+  },
+  "autoload": {
+    "psr-4": {
+      "Controllers\\": "app/controllers/",
+      "Models\\": "app/models/"
+    }
+  }
+}
