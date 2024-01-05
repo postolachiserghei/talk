@@ -14,15 +14,22 @@ class BaserController
     }
 
 
-    public function addError($text)
+    public function addError($text, $key = null)
     {
-        $this->errors[] = $text;
+        $key ? $this->errors[$key] = $text : $this->errors[] = $text;
+    }
+
+    public function hasError()
+    {
+        return count($this->errors) > 0;
     }
 
     public function getResponse()
     {
         return array_merge($this->data, [
-            'status' => (count($this->errors) > 0 ? 'FAIL' : 'OK')
+            'status' => (count($this->errors) > 0 ? 'FAIL' : 'OK'),
+            'message' => (count($this->errors) > 0 ? implode(', ', $this->errors) : 'Операция прошла успешно!'),
+            'errors' => $this->errors
         ]);
     }
 

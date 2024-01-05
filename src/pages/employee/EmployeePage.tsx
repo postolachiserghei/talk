@@ -3,7 +3,6 @@ import {Route, Routes,useLocation} from "react-router-dom";
 import List from "#app/pages/employee/List";
 import NoPage from "#app/pages/NoPage";
 import React from "react";
-import View from "#app/pages/employee/View";
 import Create from "#app/pages/employee/Create";
 
 function EmployeePage({className}: { className: string }) {
@@ -17,7 +16,6 @@ function EmployeePage({className}: { className: string }) {
                 <Routes>
                     <Route  path="/">
                         <Route path={'/'} element={<List/>}/>
-                        <Route path={'/view'} element={<View/>}/>
                         <Route path={'/create'} element={<Create/>}/>
                         <Route path="*" element={<NoPage/>}/>
                     </Route>

@@ -1,5 +1,5 @@
 import useInput from "#app/components/ui/useInput";
-import useForm from "#app/components/ui/useForm";
+import useForm,{FormUse} from "#app/components/ui/useForm";
 import useRow from "#app/components/ui/useRow";
 import useCol from "#app/components/ui/useCol";
 import useButton from "#app/components/ui/useButton";
@@ -14,6 +14,7 @@ export const app__ui = {
     Col: useCol,
     InputText: useInput,
     Form: useForm,
+    FormUse: FormUse,
     Button: useButton,
     Drawer: useDrawer,
     Modal: useModal,

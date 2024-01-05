@@ -6,8 +6,24 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 class EmployeeController extends BaserController
 {
+
+    public function isUniqueEmail($email, $id = null)
+    {
+        $query = Employee::query()->where('email', '=', $email);
+        if ($id) {
+            $query->where('id', '!=', $id);
+        }
+        if ($query->count('*') > 0) {
+            $this->addError("Почта '$email' уже занята!", 'email');
+        }
+    }
+
     public function create($data)
     {
+        $this->isUniqueEmail($data['email']);
+        if ($this->hasError())
+            return $this;
+
         if (!Employee::create($data)) {
             $this->addError('Failed to add new record!');
         }
@@ -18,8 +34,23 @@ class EmployeeController extends BaserController
     public function update($data)
     {
         $id = (int)@$data['id'];
-        $id ? Employee::query()->where('id', '=', $id)->update($data) :
+
+        if (!$id) {
             $this->addError('No id!');
+            return $this;
+        }
+
+        if ($data['parent_id'] === $id) {
+            $this->addError('Нельзя бы сам себе начальником, так не бывает!)', 'parent_id');
+            return $this;
+        }
+
+        $this->isUniqueEmail($data['email'], $id);
+        if ($this->hasError())
+            return $this;
+
+        Employee::query()->where('id', '=', $id)->update($data);
+
         return $this;
     }
 
@@ -61,10 +92,9 @@ class EmployeeController extends BaserController
         $take = 100;
 
         $data = Employee::query()
-//            ->where('email', '=', $value)
-            ->orWhere('email', 'like', '%' . $value . '%')
+            ->where('email', '=', trim($value))
+            ->orWhere('email', 'like', '%' . trim($value) . '%')
             ->take($take)
-            ->orderBy('email', 'asc')
             ->get();
 
 

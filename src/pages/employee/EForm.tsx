@@ -17,7 +17,10 @@ function EForm({
                    id
                }: { initialValues?: EType & { parent?: EType }, actionName: 'create' | 'update', id?: number }) {
 
-    const {Form, InputText, Button, Col, Row, Select} = app__ui
+    const {Form, FormUse, InputText, Button, Col, Row, Select} = app__ui
+
+    let form = FormUse()
+
     const [loading, setLoading] = app__hooks.useState<boolean>(false);
     const [loadingSelect, setLoadingSelect] = app__hooks.useState<boolean>(false);
     const [parentId, setParentId] = app__hooks.useState<any>(initialValues?.parent_id)
@@ -29,7 +32,21 @@ function EForm({
     const save = (data: EType) => {
         setLoading(true)
         appFetch(id ? 'update' : 'create', {...data, ...{id: id, parent_id: parentId}}).then((res) => {
-            message.info(res.response.status)
+            if (Object.keys(res.response.errors).length > 0) {
+                Object.keys(res.response.errors).map((key) => {
+                    form.setFields([
+                        {
+                            name: key,
+                            errors: [res.response.errors[key]],
+                        },
+                    ]);
+                })
+            }else {
+                form.resetFields()
+            }
+            res.response.status === 'FAIL' ?
+                message.error(<>{res.response.status}<br/>{res.response.message}</>, 5) :
+                message.success(<>{res.response.status}<br/>{res.response.message}</>)
             setLoading(false)
         })
     }
@@ -50,11 +67,11 @@ function EForm({
     };
 
     const filterParentOption = (input: string, option?: any | { label: string; value: string }): boolean =>
-        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+        (option?.label ?? '').trim().toLowerCase().includes(input.trim().toLowerCase());
 
     let rules: any = [{required: true}]
 
-    return <Form onFinish={save} initialValues={initialValues}>
+    return <Form form={form} onFinish={save} initialValues={initialValues}>
         <h1>
             {actionName === 'update' ? 'Обновление' : 'Добавление'} записи
         </h1>

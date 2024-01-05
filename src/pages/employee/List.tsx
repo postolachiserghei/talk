@@ -10,13 +10,17 @@ let fields = {
     function: {label: 'Должность'},
     email: {label: 'Почта'},
     phone: {label: 'Телефон'},
-    note: {label: 'Заметка'},
     parent_id: {label: 'Начальник'},
+    note: {label: 'Заметка'},
     action: {label: 'Действия'},
 }
 
 const columns: { title: string, dataIndex: string, key: string }[] = Object.keys(fields).map((key) => {
-    return {title: Object(fields)[key].label, key: key, dataIndex: key}
+    return {
+        ...{title: Object(fields)[key].label, key: key, dataIndex: key}, ...(key === 'action' ? {
+            fixed: 'right', width: 120
+        } : (key === 'id') ? {fixed: 'left', width: 80} : {})
+    }
 })
 
 function List() {
@@ -81,6 +85,7 @@ function List() {
             Всего записей : {total}
         </div>
         <Table
+            bordered={true}
             pagination={{
                 total: total,
                 pageSize: pageSize,
@@ -88,7 +93,7 @@ function List() {
                 onChange: (pg) => setPage(pg),
                 showSizeChanger: false
             }}
-            dataSource={data} columns={columns}/>
+            dataSource={data} columns={columns} scroll={{x: 1500}}/>
     </>
 }
 
